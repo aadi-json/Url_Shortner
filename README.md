@@ -1,39 +1,33 @@
 # Shortly: URL Shortener
 
-A Flask URL shortener with authentication, per-link click tracking, a paginated
-personal dashboard, and PostgreSQL migrations.
+A Bitly-inspired URL shortener built with Flask, Python, SQLAlchemy, and SQLite, featuring user authentication, URL redirection, click tracking, and a personal dashboard.
 
 ## Features
-- Email/password signup, login, logout (hashed passwords, Flask-Login sessions)
-- CSRF protection on all forms
-- 6-character random short codes, collision-safe (unique constraint + retry)
-- Atomic click counting on redirect
-- Users can only see and delete their own links
-- Server-side pagination on the dashboard
-- Tests with pytest
 
-## Stack
-Python, Flask, SQLAlchemy, Flask-Migrate (Alembic), PostgreSQL, Jinja2, Tailwind CSS
+- User registration, login, and logout
+- Secure password hashing and session management
+- CSRF protection on forms
+- Unique, randomly generated 6-character short URLs
+- Automatic click tracking on redirects
+- Personal dashboard with server-side pagination
+- Users can view and delete only their own links
+- Database migrations using Flask-Migrate and Alembic
+- Automated tests using pytest
 
-## Run locally
+## Tech Stack
+
+- **Language:** Python
+- **Backend:** Flask
+- **Database:** SQLite (default), PostgreSQL support if configured
+- **ORM:** SQLAlchemy
+- **Migrations:** Flask-Migrate and Alembic
+- **Authentication:** Flask-Login
+- **Frontend:** HTML, CSS, Jinja2, Tailwind CSS
+
+## Getting Started
+
+### 1. Clone the repository
+
 ```bash
-python -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-export DATABASE_URL=postgresql://user:password@localhost/shortly   # optional, defaults to SQLite
-export SECRET_KEY=change-me
-flask --app run db init
-flask --app run db migrate -m "initial"
-flask --app run db upgrade
-python run.py
-```
-
-## Tests
-```bash
-pytest
-```
-
-## Roadmap
-- Custom aliases and link expiry
-- Daily click analytics
-- Docker + deployment
-- Admin role / RBAC
+git clone https://github.com/aadi-json/Url_Shortner.git
+cd Url_Shortner
