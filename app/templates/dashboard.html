@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<form method="post" class="flex gap-2 mb-8">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input name="url" type="url" placeholder="https://example.com/a/very/long/link" required class="flex-1 border rounded px-3 py-2">
+  <button class="bg-indigo-600 text-white px-4 rounded">Shorten</button>
+</form>
+
+{% if pagination.items %}
+<div class="bg-white rounded shadow overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-100 text-left">
+      <tr><th class="p-3">Short link</th><th class="p-3">Original</th><th class="p-3">Clicks</th><th class="p-3"></th></tr>
+    </thead>
+    <tbody>
+    {% for link in pagination.items %}
+      {% set short = url_for('main.follow', code=link.short_code, _external=True) %}
+      <tr class="border-t">
+        <td class="p-3"><a href="{{ short }}" class="text-indigo-600 hover:underline">{{ short }}</a></td>
+        <td class="p-3 max-w-xs truncate" title="{{ link.original_url }}">{{ link.original_url }}</td>
+        <td class="p-3">{{ link.clicks }}</td>
+        <td class="p-3">
+          <form method="post" action="{{ url_for('main.delete_link', link_id=link.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="text-red-600 hover:underline">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="flex justify-between mt-4 text-sm">
+  {% if pagination.has_prev %}<a class="text-indigo-600" href="{{ url_for('main.dashboard', page=pagination.prev_num) }}">&larr; Previous</a>{% else %}<span></span>{% endif %}
+  <span class="text-slate-500">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+  {% if pagination.has_next %}<a class="text-indigo-600" href="{{ url_for('main.dashboard', page=pagination.next_num) }}">Next &rarr;</a>{% else %}<span></span>{% endif %}
+</div>
+{% else %}
+<p class="text-slate-500 text-center">No links yet. Paste a URL above to create your first one.</p>
+{% endif %}
+{% endblock %}
