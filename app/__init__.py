@@ -1,4 +1,5 @@
 import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -27,12 +28,11 @@ def create_app(config_object="config.Config"):
     # Load application configuration
     app.config.from_object(config_object)
 
-    # Configure writable storage for Vercel
+    # Configure writable storage on Vercel
     if os.environ.get("VERCEL"):
         os.makedirs(app.instance_path, exist_ok=True)
 
-        # Temporary SQLite database; data is not guaranteed to persist
-        # between serverless invocations or deployments.
+        # Temporary SQLite database
         app.config["SQLALCHEMY_DATABASE_URI"] = (
             "sqlite:////tmp/shortly.db"
         )
@@ -46,7 +46,7 @@ def create_app(config_object="config.Config"):
     # Configure Flask-Login
     login_manager.login_view = "auth.login"
 
-    # Import models so SQLAlchemy and migrations can discover them
+    # Import models
     from app import models
 
     # Register blueprints
@@ -55,5 +55,14 @@ def create_app(config_object="config.Config"):
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
+
+    # Create missing database tables on Vercel
+    if os.environ.get("VERCEL"):
+        with app.app_context():
+            db.create_all()
+
+            # Print tables in Vercel runtime logs for verification
+            from sqlalchemy import inspect
+            print("Database tables:", inspect(db.engine).get_table_names())
 
     return app
