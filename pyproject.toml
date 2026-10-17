@@ -1,2 +1,16 @@
+[project]
+name = "shortly-url-shortener"
+version = "1.0.0"
+description = "A Flask URL shortener"
+requires-python = ">=3.11"
+dependencies = [
+    "Flask",
+    "Flask-SQLAlchemy",
+    "Flask-Migrate",
+    "Flask-Login",
+    "Flask-WTF",
+    "email-validator"
+]
+
 [tool.vercel]
 entrypoint = "run:app"
